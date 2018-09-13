@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import pandas as pd
 import numpy as np
 import xlrd
@@ -12,14 +13,8 @@ excel = excel.drop(['排名'],axis=1)
 #app_names =excel['易观'].values
 #print(type(app_names))
 #print(app_names)
-#以易观数据为基准统计
-"""for app_name in app_names:
-    count_game[app_name] =1"""
+# step1 频次统计
 
-"""data_1=np.zeros((2,n+1))
-data_1=pd.DataFrame(data_1)
-test=pd.DataFrame(columns=id_column)
-a=test.append(data_1，columns=id_column"""
 i=0
 for ix, col in excel.iteritems():
     print('ix = '+str(ix))
@@ -32,6 +27,9 @@ for ix, col in excel.iteritems():
         game_list[app_name]+=1
     print(game_list)
 print(len(game_list))
-count_list = pd.DataFrame(game_list)
+count_list = pd.DataFrame(game_list,index=['频次']).T
+#print(count_list)
+# step2 频次排序
+count_list = count_list.sort_values(by='频次',ascending=False)
 print(count_list)
-#count_list.to_excel("游戏频次统计")
+#count_list.to_excel('频次统计.xlsx',encoding='utf-8')
