@@ -44,10 +44,44 @@ for ix, col in excel.iteritems():
         continue
     for row in excel.loc[:,ix]:
         print ( 'row is %s', row)
-        if not (part_list.get(row)is None):
+        if not (part_list['频次'].get(row)is None):
             print (ix)
             name = row
-            part_list.get(row)['频次'] = str(ix)+'_'+str(excel[excel[ix]==name]['排名'].values[0])
+            part_list['频次'][row] = str(ix)+'_'+str(excel[excel[ix]==name]['排名'].values[0])
 df_count01 = pd.DataFrame(part_list)
 df_count01 =df_count01.T
 df_count01.to_excel('频次为1的游戏.xls')
+#计算前75个的排名
+#重现初始化一遍dict
+top_75 = {}
+part_list = count_list[count_list['频次']>1]
+part_list = part_list.T.to_dict()
+for (key,values )in part_list['频次'].items():
+    top_75[key]=[]
+for ix, col in excel.iteritems():
+    print('ix = '+str(ix))
+    if ix == '排名':
+        continue
+    for row in excel.loc[:,ix]:
+        print ( 'row is %s', row)
+        if row is np.nan:
+            continue
+        if not (top_75.get(row)is None):
+            print (ix)
+            name = row
+            top_75.get(row).append(str(excel[excel[ix]==name]['排名'].values[0]))
+top_75 = pd.DataFrame(top_75,index=['排名'])
+top_75=top_75.T
+top_75.to_excel('top75.xls')
+
+#处理后25个，以易观为基准
+yiguan_list = {}
+for row in excel.loc[:,'易观']:
+    print ( 'row is %s', row)
+    if not (part_list['频次'].get(row)is None):
+        name = row
+        print ( 'row is'+ str(row))
+        yiguan_list[row]=excel[excel['易观']==name]['排名'].values[0]
+yiguan_list = pd.DataFrame(yiguan_list,index=['排名'])
+yiguan_list=yiguan_list.T
+yiguan_list.to_excel('top_to100.xls')
